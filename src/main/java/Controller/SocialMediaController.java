@@ -5,12 +5,13 @@ import io.javalin.http.Context;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import Model.Account;
-import Model.Message;
 
 import Model.Account;
 import Model.Message;
 import Service.AccountService;
+import Service.MessageService;
+
+import java.util.List;
 
 
 
@@ -22,6 +23,12 @@ import Service.AccountService;
 public class SocialMediaController {
 
     AccountService accountService;
+    MessageService messageService;
+
+    public SocialMediaController(){
+        accountService = new AccountService();
+        messageService = new MessageService();
+    }
     
     /**
      * In order for the test cases to work, you will need to write the endpoints in the startAPI() method, as the test
@@ -30,9 +37,18 @@ public class SocialMediaController {
      */
     public Javalin startAPI() {
         Javalin app = Javalin.create();
-        app.get("example-end", this::exampleHandler);
+        app.get("example-endpoint", this::exampleHandler);
 
         app.post("/register",this::postAccountHandler);
+        app.post("/login", this::postLoginHandler);
+        app.post("/messages", this::postMessageHandler);
+        app.get("/messages", this::getAllMessageHandler);
+        app.get("/messages/{message_id}", this::getMessagesByIdHandler);
+        app.delete("/messages/{message_id}", this::deleteMessageByIdHandler);
+        app.patch("/messages/message/{message_id}", this::patchMessageByIdHandler);
+        app.get("/accounts/{account_id}", this::updateAccountHandler);
+
+        //app.get("message", this::getAllMessagesHandler);
 
         return app;
     }
@@ -48,6 +64,76 @@ public class SocialMediaController {
         }
     }
 
+    private void postLoginHandler(Context ctx)throws JsonProcessingException{
+        ObjectMapper mapper = new ObjectMapper();
+        Account account = mapper.readValue(ctx.body(), Account.class);
+        Account loginAccount = accountService.loginAccount(account);
+
+        if(loginAccount == null){
+            ctx.status(404);
+        }else{
+            ctx.json(mapper.writeValueAsString(loginAccount));
+        }
+    }
+
+    private void postMessageHandler(Context ctx)throws JsonProcessingException{
+        ObjectMapper mapper = new ObjectMapper();
+        Message message = mapper.readValue(ctx.body(), Message.class);
+        Account account = accountService.getAccountById(message.getPosted_by());
+        
+        if(message.getMessage_text().length() >= 255 || message.getMessage_text() == "" || 
+        account == null){
+            ctx.status(400);
+        }
+
+        Message addedMessage = messageService.addMessage(message);
+        
+        //check to see if account id is valid
+        //Account account = accountService.getAccountById(addedMessage.getPosted_by());
+        
+        ctx.json(mapper.writeValueAsString(addedMessage));
+        
+    }
+
+    private void getAllMessageHandler(Context ctx)throws JsonProcessingException{
+        List<Message> messages = messageService.getAllMessages();
+        ctx.json(messages);
+    }
+
+    private void getMessagesByIdHandler(Context ctx)throws JsonProcessingException{
+        ObjectMapper mapper = new ObjectMapper();
+        Message message = mapper.readValue(ctx.body(), Message.class);
+        List<Message> messages = messageService.getMessagesById(message.getMessage_id());
+        
+        ctx.json(messages);
+        /* 
+        if(addedMessage == null){
+            ctx.json(mapper.writeValueAsString(""));
+        }else{
+            ctx.json(mapper.writeValueAsString(message));
+            
+        }
+        */
+    }
+
+    private void deleteMessageByIdHandler(Context ctx)throws JsonProcessingException{
+        ;
+    }
+
+    private void patchMessageByIdHandler(Context ctx)throws JsonProcessingException{
+        ;
+    }
+
+    private void updateAccountHandler(Context ctx)throws JsonProcessingException{
+        ;
+    }
+
+/* 
+    private void getAllAccounts(Context ctx)throws JsonProcessingException{
+        List<Account> accounts = accountService.getAllAccounts();
+        ctx.json(accounts);
+    }
+*/
     /**
      * This is an example handler for an example endpoint.
      * @param context The Javalin Context object manages information about both the HTTP request and response.
