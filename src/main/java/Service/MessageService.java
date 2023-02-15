@@ -43,7 +43,8 @@ public class MessageService {
         return messageDAO.deleteMessageByIdHandler(id);
     }
 
-    public Message patchMessageById(int id){
-        return messageDAO.patchMessageByIdHandler(id);
+    public Message patchMessageById(int id, String body){
+        messageDAO.patchMessageByIdHandler(id, body);
+        return messageDAO.getMessageByMessageIdHandler(id);
     }
 }

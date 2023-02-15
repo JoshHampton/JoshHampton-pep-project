@@ -119,8 +119,13 @@ public class SocialMediaController {
 
     private void patchMessageByIdHandler(Context ctx)throws JsonProcessingException{
         ObjectMapper mapper = new ObjectMapper();
+        //JsonNode root = mapper.readTree(ctx);
         int id = Integer.parseInt(ctx.pathParam("message_id"));
-        Message message = messageService.patchMessageById(id);
+        //Message body = mapper.readValue(ctx.body(), Message.class);
+        //String json = "{\"messages\": \"message_text\"}";
+        //String text = new ObjectMapper().readValue(json, String.class);
+        String body = mapper.writeValueAsString(ctx);
+        Message message = messageService.patchMessageById(id, body);
         
         ctx.json(mapper.writeValueAsString(message));
     }
