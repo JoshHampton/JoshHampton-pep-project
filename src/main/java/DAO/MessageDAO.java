@@ -119,30 +119,13 @@ public class MessageDAO {
         Connection connection = ConnectionUtil.getConnection();
         
         try{
-            //SQL Logic
-            String sql = "SELECT * FROM message WHERE message_id = ?";
+            String sql = "DELETE FROM message WHERE message_id = ?";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setInt(1, id);
 
 
-            ResultSet rs = preparedStatement.executeQuery();
-
-            sql = "DELETE FROM message WHERE message_id = " + id;
-            preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setInt(1, id);
-
-
             preparedStatement.executeUpdate();
-
-            while(rs.next()){
-                Message message = new Message(rs.getInt("message_id"),
-                rs.getInt("posted_by"),
-                rs.getString("message_text"),
-                rs.getLong("time_posted_epoch"));
-
-
-                return message;
-            }
+            //return getMessageByMessageIdHandler(id);
             
         }catch(SQLException e){
             System.out.println(e.getMessage());

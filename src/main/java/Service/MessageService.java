@@ -40,7 +40,13 @@ public class MessageService {
     }
 
     public Message deleteMessageById(int id){
-        return messageDAO.deleteMessageByIdHandler(id);
+        Message message = messageDAO.getMessageByMessageIdHandler(id);
+
+        messageDAO.deleteMessageByIdHandler(id);
+        if (message == null){
+            return null;
+        }
+        return message;
     }
 
     public Message patchMessageById(int id, String body){
