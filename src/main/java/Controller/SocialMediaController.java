@@ -11,6 +11,7 @@ import Model.Message;
 import Service.AccountService;
 import Service.MessageService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -43,10 +44,10 @@ public class SocialMediaController {
         app.post("/login", this::postLoginHandler);
         app.post("/messages", this::postMessageHandler);
         app.get("/messages", this::getAllMessageHandler);
-        app.get("/messages/{message_id}", this::getMessagesByIdHandler);
+        app.get("/messages/{message_id}", this::getMessageByMessageIdHandler);
         app.delete("/messages/{message_id}", this::deleteMessageByIdHandler);
-        app.patch("/messages/message/{message_id}", this::patchMessageByIdHandler);
-        app.get("/accounts/{account_id}", this::updateAccountHandler);
+        app.patch("/messages/{message_id}", this::patchMessageByIdHandler);
+        app.get("/accounts/{account_id}/messages", this::getMessagesByAccountIdHandler);
 
         //app.get("message", this::getAllMessagesHandler);
 
@@ -100,40 +101,38 @@ public class SocialMediaController {
         ctx.json(messages);
     }
 
-    private void getMessagesByIdHandler(Context ctx)throws JsonProcessingException{
+    private void getMessageByMessageIdHandler(Context ctx)throws JsonProcessingException{
         ObjectMapper mapper = new ObjectMapper();
-        Message message = mapper.readValue(ctx.body(), Message.class);
-        List<Message> messages = messageService.getMessagesById(message.getMessage_id());
+        int id = Integer.parseInt(ctx.pathParam("message_id"));
+        Message message = messageService.getMessageByMessageId(id);
         
-        ctx.json(messages);
-        /* 
-        if(addedMessage == null){
-            ctx.json(mapper.writeValueAsString(""));
-        }else{
-            ctx.json(mapper.writeValueAsString(message));
-            
-        }
-        */
+        ctx.json(mapper.writeValueAsString(message));
     }
 
     private void deleteMessageByIdHandler(Context ctx)throws JsonProcessingException{
-        ;
+        ObjectMapper mapper = new ObjectMapper();
+        int id = Integer.parseInt(ctx.pathParam("message_id"));
+        Message message = messageService.deleteMessageById(id);
+        
+        ctx.json(mapper.writeValueAsString(message));
     }
 
     private void patchMessageByIdHandler(Context ctx)throws JsonProcessingException{
-        ;
+        ObjectMapper mapper = new ObjectMapper();
+        int id = Integer.parseInt(ctx.pathParam("message_id"));
+        Message message = messageService.patchMessageById(id);
+        
+        ctx.json(mapper.writeValueAsString(message));
     }
 
-    private void updateAccountHandler(Context ctx)throws JsonProcessingException{
-        ;
+    private void getMessagesByAccountIdHandler(Context ctx)throws JsonProcessingException{
+        ObjectMapper mapper = new ObjectMapper();
+        int id = Integer.parseInt(ctx.pathParam("account_id"));
+        List<Message> messages = messageService.getMessagesByAccountId(id);
+
+        ctx.json(messages);
     }
 
-/* 
-    private void getAllAccounts(Context ctx)throws JsonProcessingException{
-        List<Account> accounts = accountService.getAllAccounts();
-        ctx.json(accounts);
-    }
-*/
     /**
      * This is an example handler for an example endpoint.
      * @param context The Javalin Context object manages information about both the HTTP request and response.

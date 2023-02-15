@@ -31,7 +31,19 @@ public class MessageService {
         return messageDAO.insertMessage(message);
     }
 
-    public List<Message> getMessagesById(int id){
-        return messageDAO.getMessagesByIdHandler(id);
+    public Message getMessageByMessageId(int id){
+        return messageDAO.getMessageByMessageIdHandler(id);
+    }
+
+    public List<Message> getMessagesByAccountId(int id){
+        return messageDAO.getMessagesByAccountIdHandler(id);
+    }
+
+    public Message deleteMessageById(int id){
+        return messageDAO.deleteMessageByIdHandler(id);
+    }
+
+    public Message patchMessageById(int id){
+        return messageDAO.patchMessageByIdHandler(id);
     }
 }
