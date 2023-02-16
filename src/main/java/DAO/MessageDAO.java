@@ -38,7 +38,6 @@ public class MessageDAO {
 
         try{
             String sql = "INSERT INTO message (posted_by, message_text, time_posted_epoch) VALUES (?,?,?)";
-            // + message.getPosted_by() + ", '" + message.getMessage_text() + "', " + message.getTime_posted_epoch() +")";
             PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 
             preparedStatement.setInt(1, message.getPosted_by());
@@ -144,23 +143,6 @@ public class MessageDAO {
             preparedStatement.setString(1, body);
 
             preparedStatement.executeUpdate();
-/* 
-            //SQL Logic
-            sql = "SELECT * FROM message WHERE message_id = ?";
-            preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setInt(1, id);
-    
-            ResultSet rs = preparedStatement.executeQuery();
-   
-            while(rs.next()){
-                Message message = new Message(rs.getInt("message_id"),
-                rs.getInt("posted_by"),
-                rs.getString("messge_text"),
-                rs.getLong("time_posted_epoch"));
-
-                return message;
-            }
-*/
         
         }catch(SQLException e){
             System.out.println(e.getMessage());

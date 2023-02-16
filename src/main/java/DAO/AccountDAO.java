@@ -53,7 +53,6 @@ public class AccountDAO {
                 int generated_account_id = (int) pkeyResultSet.getLong(1);
                 return new Account(generated_account_id, account.getUsername(), account.getPassword());
             }
-            //return account;
         }catch(SQLException e){
             System.out.println(e.getMessage());
         }
@@ -67,7 +66,6 @@ public class AccountDAO {
             String sql = "SELECT * FROM account WHERE username = '" + username + "'";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
 
-            //preparedStatement.setString(1, username);
 
             ResultSet rs = preparedStatement.executeQuery();
 

@@ -23,11 +23,6 @@ public class MessageService {
     }
 
     public Message addMessage(Message message){
-        //check to see if account exists
-        //if (accountDAO.getAccountById(message.getPosted_by()) == null){
-        //    return null;
-        //}
-        
         return messageDAO.insertMessage(message);
     }
 
