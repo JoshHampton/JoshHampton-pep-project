@@ -125,7 +125,7 @@ public class MessageDAO {
 
 
             preparedStatement.executeUpdate();
-            //return getMessageByMessageIdHandler(id);
+            return getMessageByMessageIdHandler(id);
             
         }catch(SQLException e){
             System.out.println(e.getMessage());
